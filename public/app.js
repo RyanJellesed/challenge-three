@@ -1,7 +1,4 @@
-{/* 
-Need to ininitialize the state of products 
-Need to set the state of products
-*/} 
+
 
 var ProductTable = React.createClass({
   propTypes: {
@@ -13,9 +10,11 @@ var ProductTable = React.createClass({
       url: this.props.url,
       method: 'GET'
     }).done(function(data){
-      {/* A JSX comment */}
-      {/* Your code here */}
+      self.setState({data: data})
     })
+  },
+  getInitialState: function () {
+    return {data: []};
   },
   componentDidMount: function() {
     this.loadProductsFromServer();
@@ -23,7 +22,7 @@ var ProductTable = React.createClass({
   render: function() {
     return (
       <div>
-        <ProductList products={this.state.SOMETHING} />
+        <ProductList products={this.state.data} />
       </div>
       )
   }
@@ -37,6 +36,17 @@ Replace the table body section with dynamic data.
 
 var  ProductList = React.createClass({
   render: function() {
+    var stocked = this.props.products.filter(function (i) {
+      return i;
+    }).map(function (e) {
+      return (
+          <tr>
+            <td> {e.name} </td>
+            <td> {e.cost} </td>
+            <td> {e.inStock.toString()} </td>
+          </tr>
+         ) 
+    })
         return (
         <div>
           <table className="table table-striped">
@@ -48,11 +58,7 @@ var  ProductList = React.createClass({
               </tr>
             </thead>
             <tbody>
-            <tr>
-              <td> each name </td>
-              <td> each cost </td>
-              <td> inStock is true </td>
-            </tr>
+                    { stocked }
             </tbody>
           </table>
         </div>
@@ -60,5 +66,7 @@ var  ProductList = React.createClass({
   }
 });
 
-React.render(<ProductTable />, document.getElementById('react-container'));
+React.render(
+  <ProductTable url="/api/products" pollInterval={2000} />, 
+  document.getElementById('react-container'));
 {/* WHICH URL IS USED TO GET ALL PRODUCTS? */}
